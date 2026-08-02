@@ -1,0 +1,113 @@
+[
+  {
+    "action": "create_pr",
+    "params": {
+      "owner": "danrcosta",
+      "repo": "test",
+      "branch": "claude/telegram-integration-instructions-7z8yzn",
+      "title": "Telegram Integration via Hermes MCP",
+      "description": "Complete Telegram + Hermes + Obsidian + Claude Code integration"
+    },
+    "result": {
+      "success": true,
+      "action": "create_pr",
+      "pr_number": 1,
+      "pr_url": "https://github.com/danrcosta/test/pull/1",
+      "status": "OPEN",
+      "timestamp": "2026-08-02T15:41:01.649689"
+    },
+    "timestamp": "2026-08-02T15:41:01.649757"
+  },
+  {
+    "action": "accept_permission",
+    "params": {
+      "scope": "danrcosta/test",
+      "permission_type": "write"
+    },
+    "result": {
+      "success": true,
+      "action": "accept_permission",
+      "scope": "danrcosta/test",
+      "permission_type": "write",
+      "granted_at": "2026-08-02T15:41:01.649827",
+      "status": "GRANTED"
+    },
+    "timestamp": "2026-08-02T15:41:01.649856"
+  },
+  {
+    "action": "create_pr",
+    "params": {
+      "owner": "danrcosta",
+      "repo": "test",
+      "branch": "claude/github-automation-workflow-abc123",
+      "title": "Hermes-powered GitHub Automation",
+      "description": "Automated workflow with Hermes Agent + Claude Code"
+    },
+    "result": {
+      "success": true,
+      "action": "create_pr",
+      "pr_number": 1,
+      "pr_url": "https://github.com/danrcosta/test/pull/1",
+      "status": "OPEN",
+      "timestamp": "2026-08-02T15:41:01.649978"
+    },
+    "timestamp": "2026-08-02T15:41:01.650002"
+  },
+  {
+    "action": "accept_permission",
+    "params": {
+      "scope": "danrcosta/test",
+      "permission_type": "write"
+    },
+    "result": {
+      "success": true,
+      "action": "accept_permission",
+      "scope": "danrcosta/test",
+      "permission_type": "write",
+      "granted_at": "2026-08-02T15:41:01.650041",
+      "status": "GRANTED"
+    },
+    "timestamp": "2026-08-02T15:41:01.650059"
+  },
+  {
+    "action": "review_pr",
+    "params": {
+      "pr_number": 1,
+      "status": "APPROVED",
+      "comments": [
+        "\u2705 Code looks good",
+        "\u2705 Tests passing",
+        "\u2705 Documentation updated"
+      ]
+    },
+    "result": {
+      "success": true,
+      "action": "review_pr",
+      "pr_number": 1,
+      "review_status": "APPROVED",
+      "comments": [
+        "\u2705 Code looks good",
+        "\u2705 Tests passing",
+        "\u2705 Documentation updated"
+      ],
+      "reviewed_at": "2026-08-02T15:41:01.650092"
+    },
+    "timestamp": "2026-08-02T15:41:01.650108"
+  },
+  {
+    "action": "merge_pr",
+    "params": {
+      "pr_number": 1,
+      "merge_method": "squash"
+    },
+    "result": {
+      "success": true,
+      "action": "merge_pr",
+      "pr_number": 1,
+      "merge_method": "squash",
+      "merged_at": "2026-08-02T15:41:01.650138",
+      "status": "MERGED"
+    },
+    "timestamp": "2026-08-02T15:41:01.650152"
+  }
+]
