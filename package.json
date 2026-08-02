@@ -1,0 +1,38 @@
+{
+  "name": "hermes-obsidian-hub",
+  "version": "1.0.0",
+  "description": "Central orchestration for AI productivity - Hermes + Obsidian + Ollama + Telegram + Claude",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "sync": "node scripts/obsidian-sync.js",
+    "webhook": "node scripts/telegram-webhook.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hermes",
+    "obsidian",
+    "ollama",
+    "telegram",
+    "ai",
+    "agent",
+    "nous"
+  ],
+  "author": "Daniel Costa",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "node-telegram-bot-api": "^0.65.0",
+    "simple-git": "^3.25.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

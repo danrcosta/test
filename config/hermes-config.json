@@ -1,0 +1,66 @@
+{
+  "project": "Hermes - Nous Agent Central Hub",
+  "version": "1.0.0",
+  "description": "Central orchestration for AI productivity - Obsidian Second Brain + Ollama + Telegram + Claude",
+
+  "ollama": {
+    "enabled": true,
+    "baseUrl": "http://localhost:11434",
+    "models": {
+      "reasoning": "deepseek-r1:14b-32k",
+      "coding": "qwen2.5-coder:14b-64k",
+      "general": "mistral-nemo:12b-128k",
+      "fast": "qwen2.7b-128k",
+      "embeddings": "nomic-embed-text:latest"
+    }
+  },
+
+  "obsidian": {
+    "enabled": true,
+    "vaultPath": "C:\\Users\\SERVER\\Hermes-Workspace\\Hermes-Vault",
+    "syncInterval": 300000,
+    "folders": {
+      "inbox": "00-inbox",
+      "daily": "01-daily",
+      "projects": "02-projects",
+      "people": "03-people",
+      "knowledge": "04-knowledge",
+      "hermes": "05-hermes",
+      "financial": "06-financial",
+      "health": "07-health",
+      "templates": "08-templates",
+      "attachments": "09-attachments"
+    }
+  },
+
+  "telegram": {
+    "enabled": true,
+    "hermesBotToken": "8913080097:AAGaQaB0hFSK-sPyjNxn0f62mqjZIW9aQXI",
+    "claudeBotToken": "PLACEHOLDER_CLAUDE_BOT_TOKEN",
+    "hermesBotName": "Danrcbh_bot",
+    "webhookUrl": "http://localhost:8080/webhook",
+    "features": {
+      "hermes": "main agent orchestration",
+      "claude": "advanced requests to Claude"
+    }
+  },
+
+  "network": {
+    "tailscale": {
+      "enabled": true,
+      "serverIp": "100.86.232.77",
+      "port": 8080
+    },
+    "localNetwork": true
+  },
+
+  "git": {
+    "enabled": true,
+    "autoCommit": true,
+    "commitInterval": 3600000,
+    "branches": {
+      "main": "main",
+      "dev": "claude/hermes-obsidian-pb4b1t"
+    }
+  }
+}
