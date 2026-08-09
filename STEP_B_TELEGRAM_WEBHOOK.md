@@ -29,7 +29,7 @@ pip install -r requirements.txt
 Crie arquivo `.env`:
 
 ```env
-TELEGRAM_BOT_TOKEN=8913080097:AAGaQaB0hFSK-sPyjNxn0f62mqjZIW9aQXI
+TELEGRAM_BOT_TOKEN=your_bot_token_here
 HERMES_URL=http://100.86.232.77:8080
 WEBHOOK_HOST=0.0.0.0
 WEBHOOK_PORT=8000
@@ -45,7 +45,7 @@ Output esperado:
 ```
 🚀 Starting Telegram Webhook Server on 0.0.0.0:8000
 📍 Webhook path: /webhook/telegram
-🤖 Bot token configured: 8913080097...
+🤖 Bot token configured: <bot-id>...
 ```
 
 ### 3. Configurar Webhook no Telegram
@@ -53,7 +53,7 @@ Output esperado:
 Você pode usar a API do Telegram para registrar o webhook:
 
 ```bash
-curl -X POST https://api.telegram.org/bot8913080097:AAGaQaB0hFSK-sPyjNxn0f62mqjZIW9aQXI/setWebhook \
+curl -X POST https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/setWebhook \
   -H "Content-Type: application/json" \
   -d '{"url": "https://seu-dominio.com/webhook/telegram"}'
 ```

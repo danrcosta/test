@@ -1,12 +1,5 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "mcpServers": {
-    "hermes": {
-      "command": "curl",
-      "args": ["-s", "http://100.86.232.77:8080"],
-      "description": "Nous Hermes Agent - Telegram Integration Bridge"
-    }
-  },
   "permissions": {
     "allow": [
       "Bash",
