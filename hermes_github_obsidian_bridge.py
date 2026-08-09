@@ -7,7 +7,11 @@ Integrates GitHub automation results with Obsidian Vault
 import json
 import logging
 from datetime import datetime
-from hermes_github_automation import HermesGitHubAutomator, GitHubAction
+from hermes_github_automation import (
+    HermesGitHubAutomator,
+    GitHubAction,
+    GitHubAuthError,
+)
 from obsidian_vault_manager import ObsidianVaultManager, SessionType, SessionStatus
 
 logging.basicConfig(
@@ -20,9 +24,16 @@ logger = logging.getLogger(__name__)
 class HermesGitHubObsidianBridge:
     """Bridge GitHub automation with Obsidian Vault storage"""
 
-    def __init__(self, vault_path: str = "./obsidian_vault"):
-        """Initialize bridge"""
-        self.automator = HermesGitHubAutomator()
+    def __init__(self, vault_path: str = "./obsidian_vault", github_token: str = None):
+        """
+        Initialize bridge.
+
+        Raises:
+            GitHubAuthError: if no GitHub token is configured. The bridge
+                refuses to start without one rather than logging workflow
+                records for calls that never reached GitHub.
+        """
+        self.automator = HermesGitHubAutomator(github_token=github_token)
         self.vault = ObsidianVaultManager(vault_path=vault_path)
         logger.info("✅ GitHub + Obsidian Bridge initialized")
 
@@ -33,7 +44,10 @@ class HermesGitHubObsidianBridge:
         branch: str,
         title: str,
         description: str = "",
-        user: str = "hermes-agent"
+        user: str = "hermes-agent",
+        base: str = "main",
+        draft: bool = True,
+        auto_merge: bool = False
     ) -> dict:
         """
         Execute PR workflow and log to Obsidian
@@ -45,6 +59,9 @@ class HermesGitHubObsidianBridge:
             title: PR title
             description: PR description
             user: User executing workflow
+            base: Base branch to merge into
+            draft: Open the PR as a draft
+            auto_merge: Merge immediately after creating (off by default)
 
         Returns:
             Complete workflow result with Obsidian session
@@ -81,32 +98,43 @@ class HermesGitHubObsidianBridge:
             repo=repo,
             branch=branch,
             title=title,
-            description=description
+            description=description,
+            base=base,
+            draft=draft,
+            auto_merge=auto_merge
         )
 
         # Log workflow steps to Obsidian
         for step in workflow_result.get("steps", []):
             step_name = step.get("step", "unknown")
             step_result = step.get("result", {})
+            succeeded = step_result.get("success", False)
 
-            # Add interaction
+            # Record what GitHub actually returned, success or failure.
+            outcome = step_result.get("status") if succeeded else "FAILED"
+
             self.vault.add_interaction(
                 session_id=session["id"],
                 interaction_type="github_action",
-                content=f"{step_name}: {step_result.get('status', 'Unknown')}",
+                content=f"{step_name}: {outcome}",
                 source="hermes-github",
                 metadata={
                     "action": step_name,
-                    "status": step_result.get("status"),
+                    "success": succeeded,
+                    "status": outcome,
                     "result": step_result
                 }
             )
 
-            # Add detailed message
+            if succeeded:
+                detail = f"✅ {step_name} completed with status: {outcome}"
+            else:
+                detail = f"❌ {step_name} failed: {step_result.get('error', 'unknown error')}"
+
             self.vault.add_message(
                 session_id=session["id"],
                 role="assistant",
-                content=f"✅ {step_name} completed with status: {step_result.get('status')}",
+                content=detail,
                 source="hermes-github",
                 metadata=step_result
             )
@@ -174,24 +202,32 @@ class HermesGitHubObsidianBridge:
 
         # Execute action
         result = self.automator.execute_hermes_command(action, params)
+        succeeded = result.get("success", False)
+        outcome = result.get("status") if succeeded else "FAILED"
 
         # Log to Obsidian
         self.vault.add_interaction(
             session_id=session_id,
             interaction_type="github_action",
-            content=f"{action.value}: {result.get('status', 'Unknown')}",
+            content=f"{action.value}: {outcome}",
             source="hermes-github",
             metadata={
                 "action": action.value,
-                "status": result.get("status"),
+                "success": succeeded,
+                "status": outcome,
                 "result": result
             }
         )
 
+        if succeeded:
+            detail = f"✅ {action.value} executed successfully"
+        else:
+            detail = f"❌ {action.value} failed: {result.get('error', 'unknown error')}"
+
         self.vault.add_message(
             session_id=session_id,
             role="assistant",
-            content=f"✅ {action.value} executed successfully",
+            content=detail,
             source="hermes-github",
             metadata=result
         )
@@ -256,59 +292,44 @@ class HermesGitHubObsidianBridge:
 
 
 def main():
-    """Test GitHub + Obsidian integration"""
-    print("\n=== Hermes GitHub + Obsidian Bridge Test ===\n")
+    """
+    Report on GitHub workflows already recorded in the vault.
 
-    bridge = HermesGitHubObsidianBridge()
+    Makes no writes to GitHub: creating a PR is a real, visible action, so
+    it belongs in an explicit call rather than in a module's entry point.
+    """
+    print("\n=== Hermes GitHub + Obsidian Bridge ===\n")
 
-    # Test 1: Execute workflow with logging
-    print("1️⃣  Executing PR workflow with Obsidian logging...")
-    result = bridge.execute_and_log_pr_workflow(
-        owner="danrcosta",
-        repo="test",
-        branch="claude/github-automation-workflow-abc123",
-        title="Hermes-powered GitHub Automation",
-        description="Automated workflow with Hermes Agent + Claude Code",
-        user="danrcosta"
-    )
-    print(f"✅ Session ID: {result['session_id']}")
-    print(f"✅ Workflow Status: {result['workflow']['status']}")
+    try:
+        bridge = HermesGitHubObsidianBridge()
+    except GitHubAuthError as e:
+        print(f"❌ {e}")
+        return
 
-    # Test 2: Log single action
-    print("\n2️⃣  Logging single GitHub action...")
-    action_result = bridge.log_github_action(
-        action=GitHubAction.REVIEW_PR,
-        params={
-            "pr_number": 1,
-            "status": "APPROVED",
-            "comments": ["Looks good!"]
-        },
-        session_id=result["session_id"],
-        user="danrcosta"
-    )
-    print(f"✅ Action logged: {action_result['action']}")
+    check = bridge.automator.verify_token()
+    if not check["success"]:
+        print(f"❌ {check['error']}")
+        return
+    print(f"✅ Authenticated as: {check['login']}")
 
-    # Test 3: Get statistics
-    print("\n3️⃣  Workflow statistics:")
+    print("\n📊 Vault statistics:")
     stats = bridge.get_workflow_stats()
     print(f"Total sessions: {stats['vault_stats']['total_sessions']}")
-    print(f"Total actions: {stats['total_actions']}")
+    print(f"Total actions this run: {stats['total_actions']}")
     print(f"Actions by type: {json.dumps(stats['actions_by_type'], indent=2)}")
 
-    # Test 4: Generate report
-    print("\n4️⃣  Generating workflow report...")
+    print("\n📋 Recorded workflows:")
     report = bridge.generate_workflow_report()
     print(f"Total workflows: {report['total_workflows']}")
     for workflow in report["workflows"]:
         print(f"  • {workflow['description']} ({workflow['status']})")
 
-    # Test 5: View session details
-    print("\n5️⃣  Session details:")
-    session_details = bridge.vault.get_session(result["session_id"])
-    print(f"Messages: {len(session_details.get('messages', []))}")
-    print(f"Interactions: {len(session_details.get('interactions', []))}")
-
-    print("\n✅ All tests completed!")
+    print(
+        "\nTo run a workflow:\n"
+        "  bridge.execute_and_log_pr_workflow(owner=..., repo=..., "
+        "branch=..., title=...)\n"
+        "Merging requires auto_merge=True and is never implicit."
+    )
 
 
 if __name__ == "__main__":

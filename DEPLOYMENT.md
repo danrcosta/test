@@ -35,7 +35,7 @@ python telegram_webhook_server.py
 # Output:
 # 🚀 Starting Telegram Webhook Server on 0.0.0.0:8000
 # 📍 Webhook path: /webhook/telegram
-# 🤖 Bot token configured: 8913080097...
+# 🤖 Bot token configured: <bot-id>...
 ```
 
 ### Option 2: Docker (Recommended)

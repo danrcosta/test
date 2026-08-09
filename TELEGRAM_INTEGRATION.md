@@ -19,7 +19,7 @@ The `.claude/settings.json` is already configured to connect to your Hermes serv
 
 ### 2. Telegram Bot Configuration
 - **Bot Handle**: @Danrcbh_bot
-- **Bot Token**: `8913080097:AAGaQaB0hFSK-sPyjNxn0f62mqjZIW9aQXI`
+- **Bot Token**: `$TELEGRAM_BOT_TOKEN`
 - **Token Purpose**: Bridge between Telegram and Hermes
 
 ### 3. Usage

@@ -57,3 +57,6 @@ Thumbs.db
 # Project specific
 telegram_media_cache/
 obsidian_vault/
+
+# Generated workflow logs
+github_workflow.json

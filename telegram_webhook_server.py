@@ -27,7 +27,12 @@ logger = logging.getLogger(__name__)
 app = FastAPI(title="Telegram to Claude Bridge")
 
 # Configuration
-TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "8913080097:AAGaQaB0hFSK-sPyjNxn0f62mqjZIW9aQXI")
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+if not TELEGRAM_BOT_TOKEN:
+    raise RuntimeError(
+        "TELEGRAM_BOT_TOKEN is not set. Export it or put it in a .env file "
+        "(which is gitignored) — never hardcode it in this file."
+    )
 TELEGRAM_API_URL = "https://api.telegram.org/bot"
 HERMES_URL = os.getenv("HERMES_URL", "http://100.86.232.77:8080")
 WEBHOOK_PATH = "/webhook/telegram"

@@ -319,7 +319,7 @@ OBSIDIAN VAULT UPDATED
 
 ### `.env` Obrigatórios:
 ```env
-TELEGRAM_BOT_TOKEN=8913080097:AAGaQaB0hFSK-sPyjNxn0f62mqjZIW9aQXI
+TELEGRAM_BOT_TOKEN=your_bot_token_here
 HERMES_URL=http://100.86.232.77:8080
 ```
 
